@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gateqapp.vercel.app/sitemap.xml
