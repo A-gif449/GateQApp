@@ -1,0 +1,241 @@
+/* Sign-in, sign-up and account pages. Uses the app's theme variables. */
+
+.auth-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  gap: 56px;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+}
+
+.auth-page-single {
+  grid-template-columns: minmax(0, 440px);
+  justify-content: center;
+}
+
+.auth-hero {
+  display: grid;
+  gap: 18px;
+  align-content: center;
+}
+
+.auth-eyebrow {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.auth-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.auth-grad {
+  background: linear-gradient(100deg, var(--accent), #a78bfa 60%, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.auth-lede {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 1.05rem;
+  color: var(--text-2);
+}
+
+.auth-perks {
+  display: grid;
+  gap: 12px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth-perks li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.auth-perks li > span:last-child {
+  display: grid;
+  gap: 2px;
+  font-size: 0.92rem;
+}
+
+.auth-perk-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* The Clerk card floats on a soft accent glow. */
+.auth-card-wrap {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  isolation: isolate;
+}
+
+.auth-card-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -40px -30px;
+  z-index: -1;
+  background: radial-gradient(55% 55% at 50% 45%, var(--accent-soft), transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.auth-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: var(--muted);
+}
+
+.auth-done {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 36px 24px;
+  text-align: center;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.auth-done h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.auth-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.spin {
+  animation: auth-spin 0.9s linear infinite;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Account page ---------- */
+
+.account-page {
+  display: grid;
+  gap: 20px;
+}
+
+.account-head {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+}
+
+.account-head h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.account-head p {
+  margin: 0 0 6px;
+}
+
+/* ---------- Header: Clerk user menu ---------- */
+
+.auth-skeleton {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 860px) {
+  .auth-page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    min-height: 0;
+  }
+  .auth-page-single {
+    justify-content: stretch;
+  }
+  .auth-perks {
+    display: none;
+  }
+  .auth-card-wrap {
+    justify-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+/* Header sign-up button */
+.btn-accent-outline {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
+}
+
+.btn-accent-outline:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* Shown only when no Clerk key is configured */
+.auth-missing {
+  padding: 10px 20px;
+  background: var(--bad-soft);
+  border-bottom: 1px solid var(--bad);
+  color: var(--text);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-missing code {
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  font-size: 0.85em;
+}

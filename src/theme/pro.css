@@ -1,0 +1,670 @@
+/* ==========================================================
+   GateQ · Professional layer
+   Loaded last. Refines three things: the top bar, the vote control,
+   and the way questions are set (card, detail page, timestamps).
+   ========================================================== */
+
+:root {
+  --font-serif: 'Source Serif 4 Variable', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: 'brand nav search actions';
+  align-items: center;
+  column-gap: 20px;
+  height: 60px;
+  padding: 0 clamp(14px, 2.4vw, 32px);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar .brand {
+  grid-area: brand;
+}
+
+.topbar .topnav {
+  grid-area: nav;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.topbar .search {
+  grid-area: search;
+  justify-self: center;
+  flex: none;
+  width: 100%;
+  max-width: 560px;
+  min-width: 0;
+  height: 38px;
+  margin: 0;
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.topbar .search.locked {
+  cursor: not-allowed;
+}
+
+.topbar .search.locked input {
+  cursor: not-allowed;
+}
+
+.topbar-actions {
+  grid-area: actions;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.topbar-actions > *,
+.topbar-actions .icon-btn,
+.topbar-actions .btn {
+  flex: none;
+}
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.brand-name {
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.topnav a {
+  padding: 7px 13px;
+  border-radius: 9px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.topnav a.active {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+.topnav a.active::after {
+  display: none;
+}
+
+/* Ask button: solid and still. It never shrinks, so its label is never cut off. */
+.topbar .tb-ask {
+  height: 36px;
+  min-width: max-content;
+  padding: 0 14px 0 11px;
+  gap: 6px;
+  border-radius: 10px;
+  box-shadow: none;
+  animation: none;
+  white-space: nowrap;
+}
+
+.topbar .tb-ask:hover {
+  filter: brightness(1.08);
+}
+
+/* Appearance controls share one capsule */
+.tb-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.tb-tools .icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  overflow: visible;
+}
+
+.tb-tools .icon-btn:hover {
+  background: var(--surface-2);
+}
+
+.tb-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  min-height: 32px;
+}
+
+.topbar .user-chip {
+  gap: 8px;
+  max-width: 170px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.topbar .user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar .tb-account .btn {
+  height: 34px;
+  border-radius: 10px;
+  padding: 0 12px;
+}
+
+@media (max-width: 1180px) {
+  .topbar .user-name {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .topbar {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'brand actions'
+      'nav search';
+    height: auto;
+    row-gap: 8px;
+    padding-block: 10px;
+  }
+  .topbar .search {
+    max-width: none;
+  }
+  .topbar kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    grid-template-areas:
+      'brand actions'
+      'search search'
+      'nav nav';
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .topbar .topnav {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topbar .search {
+    order: 0;
+    width: 100%;
+  }
+  .tb-account {
+    padding-left: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tb-ask-label {
+    display: none;
+  }
+  .topbar .tb-ask {
+    padding: 0 11px;
+  }
+}
+
+/* ---------- Vote control ---------- */
+
+.vote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.vote.vertical {
+  flex-direction: column;
+  align-self: start;
+  width: 46px;
+  border-radius: 12px;
+}
+
+.vote.horizontal {
+  height: 28px;
+  align-self: start;
+  border-radius: 8px;
+}
+
+.vote .vote-btn {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.vote.horizontal .vote-btn {
+  width: 26px;
+  height: 100%;
+}
+
+.vote .vote-btn:hover {
+  transform: none;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.vote .vote-btn.up:hover {
+  color: var(--good);
+}
+
+.vote .vote-btn.down:hover {
+  color: var(--bad);
+}
+
+.vote .vote-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.vote .vote-btn.on-up {
+  color: var(--good);
+  background: var(--good-soft);
+  box-shadow: none;
+}
+
+.vote .vote-btn.on-down {
+  color: var(--bad);
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  box-shadow: none;
+}
+
+.vote .vote-score {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 5px 0;
+  border-block: 1px solid var(--border);
+  background: var(--surface-2);
+  text-align: center;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.vote.horizontal .vote-score {
+  width: auto;
+  min-width: 30px;
+  padding: 0 6px;
+  border-block: 0;
+  border-inline: 1px solid var(--border);
+  font-size: 0.84rem;
+  line-height: 26px;
+}
+
+.vote.up-active .vote-score {
+  color: var(--good);
+}
+
+.vote.down-active .vote-score {
+  color: var(--bad);
+}
+
+.post {
+  grid-template-columns: 46px minmax(0, 1fr);
+}
+
+/* ---------- Question card ---------- */
+
+.qcard.qc {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: none;
+  overflow: visible;
+  transform: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.qcard.qc:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: none;
+}
+
+.qc-stats {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.qc-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+}
+
+.qc-stat.answered {
+  color: var(--good);
+  background: var(--good-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--good) 35%, transparent);
+}
+
+.qc-stat.quiet {
+  opacity: 0.85;
+}
+
+.qc-num {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.qc-stat.answered .qc-num {
+  color: var(--good);
+}
+
+.qc-main {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+}
+
+.qc-ref {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.qc-subject {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.qc-paper {
+  padding-left: 12px;
+  border-left: 1px solid var(--border-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.qc-title {
+  margin: 0;
+  max-width: 78ch;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.qc-title a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+  transition: text-decoration-color 0.15s, color 0.15s;
+}
+
+.qcard.qc:hover .qc-title a {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.qc-excerpt {
+  display: -webkit-box;
+  margin: 0;
+  max-width: 78ch;
+  overflow: hidden;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--text-2);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.qc-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 20px;
+  max-width: 640px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  color: var(--text-2);
+}
+
+.qc-options li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.qc-opt-key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.qc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.qc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.qc-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.qc-by .ts::before {
+  content: '·';
+  margin-right: 8px;
+  color: var(--border-strong);
+}
+
+.qc-thumb {
+  align-self: start;
+  width: 112px;
+  height: 84px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.question-grid .qcard.qc {
+  grid-template-columns: 84px minmax(0, 1fr);
+}
+
+.question-grid .qc-options,
+.question-grid .qc-thumb {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .qc-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .qcard.qc,
+  .question-grid .qcard.qc {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .qc-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .qc-thumb {
+    display: none;
+  }
+}
+
+/* ---------- Timestamps ---------- */
+
+.ts {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ts-ago {
+  color: var(--muted);
+}
+
+/* ---------- Question page ---------- */
+
+.detail-ref {
+  margin: 0 0 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-head h1 {
+  max-width: 30em;
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.post:not(.answer) .prose {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+  max-width: 640px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.opt-key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--surface-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.opt-text {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.answer-verdict {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--good-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--good) 35%, transparent);
+  font-weight: 650;
+  color: var(--good);
+}
+
+.btn-primary {
+  animation: none;
+}
+
+.sign-in-gate {
+  margin-top: 8px;
+}
